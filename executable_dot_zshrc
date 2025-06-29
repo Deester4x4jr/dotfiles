@@ -97,5 +97,9 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="$PATH:$( yarn global bin )"
 export PATH="/opt/homebrew/opt/macos-trash/bin:$PATH"
 
+
+# EVAL Lines
+eval "$(starship init zsh)"
+
 # environment
 source ~/.zprofile
