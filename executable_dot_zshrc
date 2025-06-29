@@ -1,0 +1,101 @@
+# Exports
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+export TERM="xterm-256color"
+export LANGUAGE="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export LC_MESSAGES="en_US.UTF-8"
+export NVM_AUTO_USE=true
+
+# Vars
+ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
+PROMPT_EOL_MARK=""
+
+# Load ZMV
+autoload -U zmv
+
+# Autocomplete init
+autoload -Uz compinit
+typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
+if [ $(date +'%j') != $updated_at ]; then
+    compinit -i
+else
+    compinit -C -i
+fi
+zmodload -i zsh/complist
+
+# Add SSH Keys to SSH Agent on login
+mkdir -p ~/.ssh
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval `ssh-agent -s`
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+ssh-add -l | grep "The agent has no identities" && ssh-add --apple-load-keychain
+
+
+###########################
+#### Plugin Management ####
+###########################
+
+## Get zsh_unplugged and store it with your other plugins
+if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
+  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
+fi
+source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
+
+## List of plugins to load
+repos=(
+  # plugins that you want loaded first
+  # sindresorhus/pure
+  # spaceship-prompt/spaceship-prompt
+
+  # other plugins
+  # rupa/z
+  zsh-users/zsh-completions
+  lukechilds/zsh-nvm
+
+  # plugins you want loaded last
+  zdharma-continuum/fast-syntax-highlighting
+  zsh-users/zsh-history-substring-search
+  zsh-users/zsh-autosuggestions
+)
+
+# Load plugins
+plugin-load $repos
+
+# Function to update plugins
+function update-plugins {
+  for d in $ZPLUGINDIR/*/.git(/); do
+    echo "Updating ${d:h:t}..."
+    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
+  done
+}
+
+###########################
+#### Plugin Management ####
+###########################
+
+
+# Aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias grep='grep --color=auto'
+alias less='less -R'
+alias more='more -R'
+alias ls='eza -la --icons --group-directories-first'
+alias authscp='sshpass -f "/Users/jodesherlia/.ssh/passfile" scp'
+
+
+# PATH Mods
+export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+export PATH="$PATH:$HOME/.gitScripts"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="$PATH:$( yarn global bin )"
+export PATH="/opt/homebrew/opt/macos-trash/bin:$PATH"
+
+# environment
+source ~/.zprofile
