@@ -3,6 +3,8 @@
 {{ $ghusername := promptString "GitHub Username" "Deester4x4jr" -}}
 {{ $hostname := promptString "Hostname?" -}}
 
+scriptTempDir = "~/tmp"
+
 [data]
     email = {{ $email | quote }}
     name = {{ $name | quote }}
