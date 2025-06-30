@@ -1,10 +1,12 @@
 {{- $email := promptString "Git email for commits" -}}
 {{- $name := promptString "Git name for commits" }}
+{{- $ghusername := promptString "GitHub Username" }}
 {{- $hostname := promptString "Hostname?" }}
 
 [data]
     email = "{{ $email }}"
     name = "{{ $name }}"
+    ghusername = "{{ $ghusername }}
     hostname = "{{ $hostname }}"
     wallpaper = "$HOME/Pictures/daft-punk-wallpaper.jpg"
 

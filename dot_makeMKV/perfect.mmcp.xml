@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<profile> 
+    <!-- profile name - Perfect -->
+    <name lang="eng">PERFECT</name>
+    
+    <!-- Common MKV flags -->
+    <mkvSettings 
+        ignoreForcedSubtitlesFlag="true"
+        useISO639Type2T="false"
+        setFirstAudioTrackAsDefault="true"
+        setFirstSubtitleTrackAsDefault="true"
+        setFirstForcedSubtitleTrackAsDefault="true"
+        insertFirstChapter00IfMissing="true"
+    />
+    
+    <!-- Settings overridable in preferences -->
+    <profileSettings
+        app_DefaultSelectionString="-sel:all,+sel:video,+sel:audio,-sel:(subtitle*forced),=100:all,-10:favlang"
+    />
+    
+    <!-- Output formats currently supported by MakeMKV -->
+    <outputSettings name="copy" outputFormat="directCopy">
+        <description lang="eng">Copy track 1:1</description>
+    </outputSettings>
+    <outputSettings name="FLAC" outputFormat="FLAC">
+        <description lang="eng">Compress Audio with FLAC</description>
+        <extraArgs>-threads 6 -compression_level 10</extraArgs>
+    </outputSettings>
+    <outputSettings name="zlib" outputFormat="directCopy">
+        <description lang="eng">Compress subtitles with ZLIB</description>
+        <extraArgs>compression="zlib" compressionLevel="9"</extraArgs>
+    </outputSettings>
+    
+    <!-- Default rule - copy as is -->
+    <trackSettings input="default">
+        <output outputSettingsName="copy" 
+                defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="Mpeg1">
+        <output outputSettingsName="copy" 
+                defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="Mpeg2">
+        <output outputSettingsName="copy" 
+                defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="Mpeg4">
+        <output outputSettingsName="copy" 
+                defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="VC1">
+        <output outputSettingsName="copy" 
+                defaultSelection="+sel:true"></output>
+    </trackSettings>
+    
+    <!-- Lossless Audio -->
+    <trackSettings input="TRUEHD-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="TRUEHD-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="MLP-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="MLP-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHDMA-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHDMA-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="FLAC-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="FLAC-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="LPCM-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="LPCM-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    
+    <!-- Lossy Audio --> 
+    <trackSettings input="MP2">
+    <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="MP3">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTS-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTS-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHD-core-multi">
+        <output outputSettingsName="FLAC"
+                defaultSelection="+sel:true">
+        </output>
+    </trackSettings>
+    <trackSettings input="DTSHD-core-stereo">
+        <output outputSettingsName="FLAC"
+                defaultSelection="+sel:true">
+        </output>
+    </trackSettings>
+    <trackSettings input="DTSHD-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHD-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHDLBR-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="DTSHDLBR-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="AC3-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="AC3-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="EAC3-stereo">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    <trackSettings input="EAC3-multi">
+        <output outputSettingsName="FLAC"
+            defaultSelection="+sel:true"></output>
+    </trackSettings>
+    
+    <!-- Compress subtitles with ZLIB -->
+    <trackSettings input="PGS">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+    <trackSettings input="PGS-forced">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+    <trackSettings input="VOBSUB">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+    <trackSettings input="VOBSUB-forced">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+    <trackSettings input="VOBSUBHD">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+    <trackSettings input="VOBSUBHD-forced">
+        <output outputSettingsName="zlib"
+            defaultSelection="-sel:true"></output>
+    </trackSettings>
+</profile>

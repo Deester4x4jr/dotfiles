@@ -1,0 +1,12 @@
+[credential "https://github.com"]
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[user]
+	name = "{{ .name }}"
+	email = "{{ .email }}"
+[push]
+	default = upstream
+	autoSetupRemote = true
+[init]
+	defaultBranch = master
