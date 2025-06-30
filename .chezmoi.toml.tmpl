@@ -1,0 +1,12 @@
+{{- $email := promptString "Git email for commits" -}}
+{{- $name := promptString "Git name for commits" }}
+{{- $hostname := promptString "Hostname?" }}
+
+[data]
+    email = "{{ $email }}"
+    name = "{{ $name }}"
+    hostname = "{{ $hostname }}"
+    wallpaper = "$HOME/Pictures/daft-punk-wallpaper.jpg"
+
+[hooks.read-source-state.pre]
+    command = ".local/share/chezmoi/.before-chezmoi-runs.sh" # login to 1Password

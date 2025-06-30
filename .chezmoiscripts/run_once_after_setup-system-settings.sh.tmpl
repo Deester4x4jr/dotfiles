@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# Based on https://mac.install.guide/mac-setup/ and https://github.com/mathiasbynens/dotfiles/blob/main/.macos
+set -euo pipefail
+
+# Close any open System Preferences panes, to prevent them from overriding
+# settings we’re about to change
+osascript -e 'tell application "System Preferences" to quit'
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# Set computer name (as done via System Preferences → Sharing)
+sudo scutil --set ComputerName "{{ .hostname }}"
+sudo scutil --set HostName "{{ .hostname }}"
+sudo scutil --set LocalHostName "{{ .hostname }}"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "{{ .hostname }}"
+
+osascript -e 'tell application "Finder" to set desktop picture to POSIX file "'"{{ .wallpaper }}"'"'
+
+###############################################################################
+# Dock
+
+defaults delete com.apple.dock persistent-apps
+
+declare -a icons=(
+    "Arc"
+    "Calculator"
+    "Cursor"
+    "Doppler"
+    "Warp"
+    "Spotify"
+    "Remember The Milk"
+    )
+for icon in "${icons[@]}"; do
+    if [ -d "/Applications/${icon}.app" ]; then
+        # Ensure there's no pre-existing entry in persistent apps, but that items in recent-apps are persisted
+        if ! defaults read com.apple.dock | grep -q "persistent-apps" || ! defaults read com.apple.dock persistent-apps | grep "${icon}"; then
+            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/${icon}.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+        fi
+    fi
+done
+
+declare -a sys_icons=(
+    "/Applications/System Settings"
+    "/Applications/iPhone Mirroring"
+    )
+for sys_icon in "${sys_icons[@]}"; do
+    defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/System${sys_icon}.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+done
+
+# Or reset to defaults
+# defaults delete com.apple.dock
+
+killall cfprefsd &>/dev/null
+killall Dock &>/dev/null
+
+defaults write com.apple.screencapture location "~/Screenshots"
+
+###############################################################################
+# Finder
+defaults write com.apple.finder FXPreferredViewStyle -string "clmv"   # Display the 'Column' view by default
+defaults write com.apple.finder _FXSortFoldersFirst -bool true        # Display folders then files when sorting by name
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true       # Show file extensions
+defaults write com.apple.finder AppleShowAllFiles YES                 # Show hidden files
+defaults write com.apple.finder ShowPathbar -bool true                # Show path bar
+defaults write com.apple.finder ShowStatusBar -bool true              # Show status bar
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"   # Search the current folder by default
+
+# Set Desktop as the default location for new Finder windows
+# For other paths, use `PfLo` and `file:///full/path/here/`
+defaults write com.apple.finder NewWindowTarget -string "PfLo"
+defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Downloads/"
+
+# Show icons for hard drives, servers, and removable media on the desktop
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+
+# Hide All desktop icons
+defaults write com.apple.finder CreateDesktop -bool false
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+killall Finder &>/dev/null
+
+
+###############################################################################
+# System Settings
+
+# Automatically quit printer app once the print jobs complete
+defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+
+# Disable the “Are you sure you want to open this application?” dialog
+# defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Disable automatic capitalization as it’s annoying when typing code
+# Might need to test this...
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+
+# Disable smart dashes as they’re annoying when typing code
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+# Disable automatic period substitution as it’s annoying when typing code
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+
+# Disable smart quotes as they’re annoying when typing code
+# Might need to test this...
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+
+###############################################################################
+# Software Updates
+
+# Enable the automatic update check
+defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+
+# Check for software updates daily, not just once per week
+# defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+
+# Download newly available updates in background
+defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+
+# Install System data files & security updates
+defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
