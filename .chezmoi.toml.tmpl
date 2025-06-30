@@ -1,7 +1,7 @@
-{{- $email := promptString "Git email for commits" }}
-{{- $name := promptString "Git name for commits" }}
-{{- $ghusername := promptString "GitHub Username" }}
-{{- $hostname := promptString "Hostname?" }}
+{{ $email := promptString "Git email for commits" -}}
+{{ $name := promptString "Git name for commits" -}}
+{{ $ghusername := promptString "GitHub Username" -}}
+{{ $hostname := promptString "Hostname?" -}}
 
 [data]
     email = "{{ $email }}"
