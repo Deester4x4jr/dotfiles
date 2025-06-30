@@ -1,8 +1,9 @@
 packages:
   universal:
     taps:
-    - homebrew/bundle
     - martido/graph
+    - cloudflare/cloudflare
+    - osx-cross/avr
     - oven-sh/bun
     - yt-dlp/taps
     brews:
@@ -81,7 +82,6 @@ packages:
     - font-sauce-code-pro-nerd-font
     - forklift
     - google-chrome
-    - google-chrome]
     - hex-fiend
     - httpie-desktop
     - inkscape
