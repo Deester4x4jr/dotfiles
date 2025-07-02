@@ -19,6 +19,7 @@ packages:
     - detect-secrets
     - difftastic
     - doctl
+    - doppler
     - eza
     - flashrom
     - gatsby-cli
@@ -78,7 +79,6 @@ packages:
     - cursor
     - daisydisk
     - docker
-    - doppler
     - font-sauce-code-pro-nerd-font
     - forklift
     - google-chrome
@@ -115,6 +115,6 @@ packages:
     - zed
     mas:
       - name: Usage Device Monitor
-        id: 970353453
+        id: 1561788435
       - name: Magnet
         id: 441258766
