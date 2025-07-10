@@ -8,7 +8,6 @@ packages:
     - yt-dlp/taps
     brews:
     - abcde
-    - ankerwork
     - aria2
     - azure-cli
     - cd-discid
@@ -73,6 +72,7 @@ packages:
     casks:
     - alfred
     - android-platform-tools
+    - ankerwork
     - arc
     - arduino-ide
     - balenaetcher
