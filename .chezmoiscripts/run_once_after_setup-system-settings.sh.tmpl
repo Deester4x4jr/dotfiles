@@ -30,11 +30,10 @@ declare -a appsToRemove=(
 
 for app in "${appsToRemove[@]}"; do
 
-    APP_EXISTS=`mas list | grep "${ app }" >/dev/null 2>&1`
-
-    if APP_EXISTS; then
-        sudo mas uninstall "${ app }"
+    if mas list | grep "${app}" >/dev/null 2>&1; then
+        sudo mas uninstall --dry-run "${app}"
     fi
+
 done
 
 ###############################################################################
