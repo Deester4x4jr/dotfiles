@@ -111,6 +111,7 @@ packages:
     - sublime-text
     - transmit
     - vlc
+    - vox
     - warp
     - xld
     - zed
