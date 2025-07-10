@@ -9,7 +9,6 @@ packages:
     brews:
     - abcde
     - aria2
-    - azure-cli
     - cd-discid
     - cdrdao
     - chezmoi
@@ -47,6 +46,7 @@ packages:
     - mkvtoolnix
     - mp4v2
     - mpv
+    - neofetch
     - nmap
     - node
     - normalize
@@ -119,3 +119,5 @@ packages:
         id: 1561788435
       - name: Magnet
         id: 441258766
+      - name: Blackmagic Disk Speed Test
+        id: 425264550
