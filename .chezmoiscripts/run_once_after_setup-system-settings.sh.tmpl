@@ -29,12 +29,17 @@ declare -a appsToRemove=(
     )
 
 for app in "${appsToRemove[@]}"; do
-
     if mas list | grep "${app}" >/dev/null 2>&1; then
-        sudo mas uninstall --dry-run "${app}"
-    fi
 
+        echo "Attempting to uninstall $(mas list | grep "${app}" | tr -s ' ' | cut -d ' ' -f 2)..."
+        
+        # Attempt uninstall regardless of success
+        sudo mas uninstall "${app}" >/dev/null 2>&1 || true
+    else
+        echo "App ${app} does not exist. Skipping"
+    fi
 done
+
 
 ###############################################################################
 # Dock
