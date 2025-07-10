@@ -10,13 +10,12 @@ export LC_MESSAGES="en_US.UTF-8"
 export NVM_AUTO_USE=true
 
 # Vars
-SITE_FUNCTIONS="/usr/local/share/zsh/site-functions"
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
+ZSCRIPTDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/scripts}
 PROMPT_EOL_MARK=""
 
-# Ensure directories exist
-mkdir -p $SITE_FUNCTIONS
-mkdir -p $ZPLUGINDIR
+# Ensure Scripts Directory Exists
+mkdir -p $ZSCRIPTDIR
 
 # Load ZMV
 autoload -U zmv
@@ -47,19 +46,19 @@ ssh-add -l | grep "The agent has no identities" && ssh-add --apple-load-keychain
 
 ## Get crash
 if [[ ! -d $ZPLUGINDIR/crash ]]; then
-  git clone --quiet https://github.com/molovo/crash $ZPLUGINDIR/crash
+    git clone --quiet https://github.com/molovo/crash $ZPLUGINDIR/crash
+    cp $ZPLUGINDIR/crash/crash $ZSCRIPTDIR/crash_handler
 fi
 
 ## Store crash it with your other plugins & load it
-if [[ -f $ZPLUGINDIR/crash/crash ]]; then
-  sudo ln -sf $ZPLUGINDIR/crash/crash /usr/local/share/zsh/site-functions/crash
-  autoload -Uz crash && crash register
+if [[ -f $ZSCRIPTDIR/crash_handler ]]; then
+    fpath=($fpath "${ZSCRIPTDIR}")
+    autoload -Uz crash_handler && crash_handler register
 fi
-
 
 ## Get zsh_unplugged and store it with your other plugins
 if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
-  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
+    git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
 fi
 source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
 
@@ -68,7 +67,6 @@ repos=(
   # plugins that you want loaded first
   # sindresorhus/pure
   # spaceship-prompt/spaceship-prompt
-  molovo/crash
 
   # other plugins
   # rupa/z
@@ -114,6 +112,10 @@ export PATH="$PATH:$HOME/.gitScripts"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="$PATH:$( yarn global bin )"
 export PATH="/opt/homebrew/opt/macos-trash/bin:$PATH"
+
+
+# Remove duplicated from fpath
+typeset -U fpath
 
 
 # EVAL Lines
