@@ -21,6 +21,23 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.serve
 osascript -e 'tell application "Finder" to set desktop picture to POSIX file "'"{{ .wallpaper }}"'"'
 
 ###############################################################################
+# Apps
+
+declare -a appsToRemove=(
+    "682658836"
+    "408981434"
+    )
+
+for app in "${appsToRemove[@]}"; do
+
+    APP_EXISTS=`mas list | grep "${ app }" >/dev/null 2>&1`
+
+    if APP_EXISTS; then
+        sudo mas uninstall "${ app }"
+    fi
+done
+
+###############################################################################
 # Dock
 
 defaults delete com.apple.dock persistent-apps
@@ -97,7 +114,7 @@ killall Finder &>/dev/null
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
 # Disable the “Are you sure you want to open this application?” dialog
-# defaults write com.apple.LaunchServices LSQuarantine -bool false
+defaults write com.apple.LaunchServices LSQuarantine -bool false
 
 # Disable automatic capitalization as it’s annoying when typing code
 # Might need to test this...
