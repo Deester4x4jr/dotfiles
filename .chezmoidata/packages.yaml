@@ -91,6 +91,7 @@ packages:
     - landrop
     - logi-options+
     - makemkv
+    - messenger
     - musicbrainz-picard
     - nordlocker
     - nordpass
