@@ -2,3 +2,8 @@ Host github.com
   HostName github.com
   User "{{ .ghusername }}"
   IdentityFile ~/.ssh/ripnado
+
+Host *
+  UseKeychain yes
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/ripnado
