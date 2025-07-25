@@ -1,3 +1,5 @@
+# Write a script that diffs this stuff with brew/mas to
+# find things that I have installed but not represented here
 packages:
   universal:
     taps:
@@ -70,7 +72,6 @@ packages:
     - yt-dlp
     - zsh
     casks:
-    - alfred
     - android-platform-tools
     - ankerwork
     - arc
