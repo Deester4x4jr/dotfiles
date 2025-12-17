@@ -3,30 +3,47 @@
 packages:
   universal:
     taps:
-    - martido/graph
     - cloudflare/cloudflare
+    - cloudflare/cloudflare
+    - gromgit/fuse
+    - macos-fuse-t/cask
+    - martido/graph
     - osx-cross/avr
     - oven-sh/bun
     - yt-dlp/taps
     brews:
     - abcde
     - aria2
+    - asciiquarium
+    - automake
+    - autotrace
+    - azure-cli
+    - bat
+    - biome
+    - btop
+    - bun
     - cd-discid
     - cdrdao
     - chezmoi
     - chrome-cli
+    - cmatrix
     - csvkit
     - deno
     - detect-secrets
+    - dhcpdump
     - difftastic
+    - dnsmasq
     - doctl
     - doppler
+    - dprint
     - eza
     - flashrom
     - gatsby-cli
     - gawk
     - gdal
+    - gdown
     - gh
+    - ghostscript
     - git
     - go
     - gobject-introspection
@@ -34,12 +51,15 @@ packages:
     - handbrake
     - httpie
     - id3tool
+    - imagemagick
+    - iperf
     - jfrog-cli
     - jq
     - kubernetes-cli
     - libcddb
     - libcdio-paranoia
     - libmusicbrainz
+    - libusb
     - libxslt
     - macos-trash
     - mas
@@ -52,17 +72,23 @@ packages:
     - nmap
     - node
     - normalize
+    - opencode
     - oven-sh/bun/bun
+    - p7zip
+    - pipes-sh
     - pipx
+    - pkgconf
     - python@3.10
     - python@3.11
     - python@3.9
     - qrencode
     - ranger
+    - sl
     - smake
     - sox
     - starship
     - tree
+    - uv
     - watch
     - watchman
     - wget
@@ -72,50 +98,59 @@ packages:
     - yt-dlp
     - zsh
     casks:
+    - adapter
     - android-platform-tools
-    - ankerwork
     - arc
     - arduino-ide
     - balenaetcher
     - beekeeper-studio
+    - blender
+    - coolterm
     - cursor
     - daisydisk
     - docker
+    - docker-desktop
     - font-sauce-code-pro-nerd-font
     - forklift
+    - fuse-t
+    - fuse-t-sshfs
     - google-chrome
+    - hammerspoon
     - hex-fiend
     - httpie-desktop
-    - inkscape
     - iterm2
     - jordanbaird-ice
+    - kiro
     - landrop
     - logi-options+
     - makemkv
-    - messenger
     - musicbrainz-picard
     - nordlocker
-    - nordpass
     - nordvpn
     - obsidian
     - pearcleaner
     - pika
     - plexamp
     - postman
+    - proton-pass
     - raindropio
     - rar
     - raycast
     - rectangle
-    - remember-the-milk
     - shottr
     - silicon-labs-vcp-driver
     - spotify
+    - steam
     - sublime-text
+    - telegram
     - transmit
+    - utm
     - vlc
     - vox
     - warp
     - xld
+    - xnviewmp
+    - yubico-yubikey-manager
     - zed
     mas:
       - name: Usage Device Monitor
@@ -124,3 +159,5 @@ packages:
         id: 441258766
       - name: Blackmagic Disk Speed Test
         id: 425264550
+      - name: AJA System Test Lite
+        id: 1092006274

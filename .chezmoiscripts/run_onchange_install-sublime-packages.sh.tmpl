@@ -1,8 +1,13 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
+echo "The time is {{- now -}}"
+
 if command -v subl >/dev/null 2>&1; then
     # Ensure we install Package Control and core plugins; we configure and license these through template files
     subl --command "install_package_control"
+    echo "Sleeping for 30s to let Package Control install..."
+    sleep 30
+    echo "Resuming package installs..."
     subl --command "advanced_install_package {\"packages\": \"A File Icon,Astro,Babel,Clickable URLs,CodeFormatter,DataConverter,Dockerfile Syntax Highlighting,DotENV,ES6-Toolkit,Formatter,GenerateUUID,GitHub Theme,Hasher,JavaScriptTemplateLiteralEnhancements,JSON Stringify,LinkOpener,Maybs Quit,MJML-syntax,Naomi,Nord,Open URL,Package Control,PlainTasks,PostgreSQL Syntax Highlighting,Pretty JSON,SideBarEnhancements,Simple math,SingleTrailingNewLine,SortBy,SublimeLinter-annotations,SublimeLinter-json,Svelte,Tailwind CSS,Task,Theme - Alpenglow,Timestamp converter,TOML,URLEncode\"}"
 fi
