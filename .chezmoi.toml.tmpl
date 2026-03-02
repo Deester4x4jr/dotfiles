@@ -36,4 +36,5 @@ scriptTempDir = "~/tmp"
     ssh_key = {{ doppler "SSH_KEY" "macbook" $dopplerConf }}
 
 [hooks.read-source-state.pre]
-    command = ".local/share/chezmoi/.before-chezmoi-runs.sh" # login to Doppler
+     # login to Doppler
+    command = ".local/share/chezmoi/.before-chezmoi-runs.sh"
