@@ -1,9 +1,11 @@
 Host github.com
   HostName github.com
-  User "{{ .ghusername }}"
-  IdentityFile ~/.ssh/ripnado
+  User git
+  IdentityFile "~/.ssh/{{ .ssh_key }}"
+  IdentitiesOnly yes
+  UseKeychain yes
+  AddKeysToAgent yes
 
 Host *
   UseKeychain yes
   AddKeysToAgent yes
-  IdentityFile ~/.ssh/ripnado

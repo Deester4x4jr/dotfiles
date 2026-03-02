@@ -1,16 +1,38 @@
-{{ $email := promptString "Git email for commits" "josh@thaw.io" -}}
+<!-- Top level decision... work of personal -->
+{{- $profileChoices := list "Personal" "Work" -}}
+{{- $profile := promptChoice "Which profile do you want to use?" $profileChoices -}}
+
+<!-- Based on profile, set some default values -->
+{{ if eq $profile "Work" }} 
+    {{ $email := "josh.desherlia@contentstack.com" }}
+    {{ $ghusername := "joshdesherlia-cs" }}
+    {{ $dopplerConf := "wrk" }}
+{{ else }}
+    {{ $email := "josh@thaw.io" }}
+    {{ $ghusername := "Deester4x4jr" }}
+    {{ $dopplerConf := "prsnl" }}
+{{ end }}
+
+<!-- Still prompt for customization -->
 {{ $name := promptString "Git name for commits" "Josh DeSherlia" -}}
-{{ $ghusername := promptString "GitHub Username" "Deester4x4jr" -}}
+{{ $email := promptString "Git email for commits" $email -}}
+{{ $ghusername := promptString "GitHub Username" $ghusername -}}
 {{ $hostname := promptString "Hostname?" -}}
 
 scriptTempDir = "~/tmp"
 
+[doppler]
+    project = "macbook"
+    config = {{ $dopplerConf | quote }}
+
 [data]
+    profile = {{- $profile | quote -}}
     email = {{ $email | quote }}
     name = {{ $name | quote }}
     ghusername = {{ $ghusername | quote }}
     hostname = {{ $hostname | quote }}
     wallpaper = "$HOME/Pictures/daft-punk-wallpaper.jpg"
+    ssh_key = {{ doppler "SSH_KEY" "macbook" $dopplerConf }}
 
 [hooks.read-source-state.pre]
     command = ".local/share/chezmoi/.before-chezmoi-runs.sh" # login to Doppler

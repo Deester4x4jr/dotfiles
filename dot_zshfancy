@@ -1,0 +1,84 @@
+# This is for fancy shit
+
+# Vars
+ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
+
+# Aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias grep='grep --color=auto'
+alias less='less -R'
+alias more='more -R'
+# I think this is from Tesla
+# alias authscp='sshpass -f "/Users/jodesherlia/.ssh/passfile" scp'
+
+# Load ZMV
+autoload -U zmv
+
+# Autocomplete init
+fpath=(/Users/josh/.docker/completions $fpath)
+zmodload -i zsh/complist
+autoload -Uz compinit
+typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
+if [ $(date +'%j') != $updated_at ]; then
+    compinit -i
+else
+    compinit -C -i
+fi
+
+
+###########################
+#### Plugin Management ####
+###########################
+
+## Get zsh_unplugged and store it with your other plugins
+if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
+    git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
+fi
+source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
+
+## List of plugins to load
+repos=(
+  # plugins that you want loaded first
+  # sindresorhus/pure
+  # spaceship-prompt/spaceship-prompt
+
+  # other plugins
+  # rupa/z
+  zsh-users/zsh-completions
+
+  akash329d/zsh-alias-finder
+  michaelsousajr/zsh-arc-search
+
+  # Can probably replace with mise later
+  lukechilds/zsh-nvm
+
+  # plugins you want loaded last
+  zdharma-continuum/fast-syntax-highlighting
+  zsh-users/zsh-history-substring-search
+  zsh-users/zsh-autosuggestions
+)
+
+# Load plugins
+plugin-load $repos
+
+# Function to update plugins
+function update-plugins {
+  for d in $ZPLUGINDIR/*/.git(/); do
+    echo "Updating ${d:h:t}..."
+    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
+  done
+}
+
+###########################
+#### Plugin Management ####
+###########################
+
+
+# Remove duplicated from fpath
+typeset -U fpath
+
+
+# Kickstart the Starship
+eval "$(starship init zsh)"
