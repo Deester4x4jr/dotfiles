@@ -2,17 +2,16 @@
 {{- $profileChoices := list "Personal" "Work" -}}
 {{- $profile := promptChoice "Which profile do you want to use?" $profileChoices -}}
 
-<!-- Default doppler profile -->
+<!-- Default vars -->
 {{ $dopplerConf := "prsnl" }}
+{{ $email := "josh@thaw.io" }}
+{{ $ghusername := "Deester4x4jr" }}
 
 <!-- Based on profile, set some default values -->
 {{ if eq $profile "Work" }} 
     {{ $email := "josh.desherlia@contentstack.com" }}
     {{ $ghusername := "joshdesherlia-cs" }}
     {{ $dopplerConf := "wrk" }}
-{{ else }}
-    {{ $email := "josh@thaw.io" }}
-    {{ $ghusername := "Deester4x4jr" }}
 {{ end }}
 
 <!-- Still prompt for customization -->
