@@ -1,0 +1,182 @@
+{
+  "base": {
+    "taps": [
+      "nohajc/anylinuxfs",
+      "oven-sh/bun",
+      "qbit-ai/tap",
+      "yt-dlp/taps"
+    ],
+    "brews": [
+      "aria2",
+      "azure-cli",
+      "bat",
+      "biome",
+      "chrome-cli",
+      "cmatrix",
+      "coreutils",
+      "csvkit",
+      "deno",
+      "detect-secrets",
+      "difftastic",
+      "doppler",
+      "dprint",
+      "eza",
+      "fswatch",
+      "fzf",
+      "gawk",
+      "gdown",
+      "gh",
+      "ghostscript",
+      "git",
+      "go",
+      "httpie",
+      "imagemagick",
+      "iperf",
+      "jq",
+      "lorem",
+      "macos-trash",
+      "mas",
+      "nmap",
+      "node",
+      "nohajc/anylinuxfs/anylinuxfs",
+      "opencode",
+      "oven-sh/bun/bun",
+      "p7zip",
+      "pipx",
+      "pkgconf",
+      "python@3.10",
+      "python@3.11",
+      "python@3.9",
+      "ranger",
+      "starship",
+      "tree",
+      "uv",
+      "watch",
+      "watchman",
+      "wget",
+      "yarn",
+      "yq",
+      "yt-dlp",
+      "zsh"
+    ],
+    "casks": [
+      "android-platform-tools",
+      "arc",
+      "affinity",
+      "balenaetcher",
+      "beekeeper-studio",
+      "betterdisplay",
+      "brave-browser",
+      "cursor",
+      "daisydisk",
+      "docker-desktop",
+      "font-sauce-code-pro-nerd-font",
+      "forklift",
+      "google-chrome",
+      "jordanbaird-ice",
+      "kiro",
+      "nordvpn",
+      "obsidian",
+      "opencode-desktop",
+      "pearcleaner",
+      "pika",
+      "proton-pass",
+      "qbit",
+      "rar",
+      "shottr",
+      "slack",
+      "spotify",
+      "sublime-text",
+      "transmit",
+      "vlc",
+      "vox",
+      "yubico-yubikey-manager",
+      "zed"
+    ],
+    "mas": [
+      { "name": "Usage Device Monitor", "id": "1561788435" },
+      { "name": "Magnet", "id": "441258766" },
+      { "name": "Blackmagic Disk Speed Test", "id": "425264550" },
+      { "name": "AJA System Test Lite", "id": "1092006274" }
+    ],
+    "home_dirs": [
+      "~/Code",
+      "~/Documents",
+      "~/Downloads",
+      "~/Pictures",
+      "~/Public",
+      "~/.config",
+      "~/.ssh"
+    ],
+    "macos_settings": [
+      { "domain": "com.apple.finder", "key": "AppleShowAllFiles", "value": true, "type": "bool" },
+      { "domain": "com.apple.dock", "key": "autohide", "value": true, "type": "bool" },
+      { "domain": "com.apple.menuextra.clock", "key": "DateFormat", "value": "EEE MMM d  H:mm:ss", "type": "string" }
+    ]
+  },
+  "personal": {
+    "extends": "base",
+    "taps": [
+      "cloudflare/cloudflare"
+    ],
+    "brews": [
+      "abcde",
+      "automake",
+      "autotrace",
+      "cd-discid",
+      "cdrdao",
+      "flashrom",
+      "gatsby-cli",
+      "handbrake",
+      "id3tool",
+      "libcddb",
+      "libcdio-paranoia",
+      "libmusicbrainz",
+      "libusb",
+      "libxslt",
+      "mkvtoolnix",
+      "mp4v2",
+      "mpv",
+      "normalize",
+      "rsyncy",
+      "smake",
+      "sox"
+    ],
+    "casks": [
+      "adapter",
+      "arduino-ide",
+      "blender",
+      "coolterm",
+      "handbrake-app",
+      "hex-fiend",
+      "landrop",
+      "logi-options+",
+      "makemkv",
+      "musicbrainz-picard",
+      "nordlocker",
+      "raindropio",
+      "silicon-labs-vcp-driver",
+      "steam",
+      "transmission",
+      "warp",
+      "xld"
+    ],
+    "secrets": {
+      "ssh_key": { "manager": "doppler", "key": "ssh/personal/id_rsa" },
+      "github_token": { "manager": "doppler", "key": "tokens/github_pat_personal" }
+    }
+  },
+  "work": {
+    "extends": "base",
+    "brews": [
+      "kubernetes-cli"
+    ],
+    "casks": [
+      "docker-desktop"
+    ],
+    "secrets": {
+      "ssh_key": { "manager": "doppler", "key": "ssh/work/id_rsa" },
+      "github_token": { "manager": "doppler", "key": "tokens/github_pat_work" }
+    }
+  }
+}
