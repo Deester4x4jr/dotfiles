@@ -21,13 +21,40 @@ if ! command -v brew >/dev/null 2>&1; then
         eval "$(/usr/local/bin/brew shellenv)"
     fi
 else
-    echo "🍺 Homebrew already installed."
+    echo "🍺 Homebrew already installed. Updating metadata..."
+    brew update
 fi
 
 # 2. Install essential dependencies
-echo "📦 Installing essential dependencies (git, bun, doppler)..."
-brew tap oven-sh/bun
-brew install git bun doppler
+echo "📦 Ensuring essential dependencies (git, bun, doppler) are installed and up to date..."
+
+# Function to ensure a tap is present
+ensure_tap() {
+    if ! brew tap | grep -q "$1"; then
+        echo "🍺 Tapping $1..."
+        brew tap "$1"
+    fi
+}
+
+# Function to ensure a formula is installed and updated
+ensure_formula() {
+    if brew list "$1" &>/dev/null; then
+        if brew outdated "$1" &>/dev/null; then
+            echo "🆙 Updating $1..."
+            brew upgrade "$1"
+        else
+            echo "✅ $1 is already up to date."
+        fi
+    else
+        echo "📥 Installing $1..."
+        brew install "$1"
+    fi
+}
+
+ensure_tap "oven-sh/bun"
+ensure_formula "git"
+ensure_formula "bun"
+ensure_formula "doppler"
 
 # 3. Setup ~/.macmuffin
 if [ ! -d "$TARGET_DIR" ]; then

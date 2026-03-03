@@ -25,7 +25,8 @@ const PROFILE_SCHEMA = z.object({
   })).optional(),
   hooks: z.object({
     'pre-run': z.array(z.string()).optional(),
-    'post-run': z.array(z.string()).optional()
+    'post-run': z.array(z.string()).optional(),
+    'on-change': z.array(z.string()).optional()
   }).optional(),
   secrets: z.record(z.object({
     manager: z.enum(['doppler']),
@@ -53,7 +54,8 @@ function mergeProfiles(base: Profile, override: Profile): Profile {
     macos_settings: [...(base.macos_settings || []), ...(override.macos_settings || [])],
     hooks: {
       'pre-run': [...(base.hooks?.['pre-run'] || []), ...(override.hooks?.['pre-run'] || [])],
-      'post-run': [...(base.hooks?.['post-run'] || []), ...(override.hooks?.['post-run'] || [])]
+      'post-run': [...(base.hooks?.['post-run'] || []), ...(override.hooks?.['post-run'] || [])],
+      'on-change': [...(base.hooks?.['on-change'] || []), ...(override.hooks?.['on-change'] || [])]
     },
     secrets: { ...(base.secrets || {}), ...(override.secrets || {}) }
   }
@@ -92,6 +94,7 @@ program
     const baseProfile = profiles.base || {}
     const selectedProfile = profiles[profileName]
     const finalProfile = mergeProfiles(baseProfile, selectedProfile)
+    let hasChanges = false
 
     console.log(chalk.blue(`🐶 Syncing with profile: ${chalk.bold(profileName)}`))
 
@@ -108,39 +111,92 @@ program
       console.log(chalk.cyan('📂 Ensuring home folder structure...'))
       for (const dir of finalProfile.home_dirs) {
         const expandedPath = dir.replace('~', process.env.HOME || '')
-        await fs.ensureDir(expandedPath)
+        if (!await fs.pathExists(expandedPath)) {
+          await fs.ensureDir(expandedPath)
+          hasChanges = true
+        }
       }
     }
 
     // Module: Package Manager (Taps)
     if (finalProfile.taps) {
       console.log(chalk.cyan('🍺 Tapping Homebrew repositories...'))
+      const { stdout: existingTaps } = await execa('brew', ['tap'])
+      const tapList = existingTaps.split('\n')
       for (const tap of finalProfile.taps) {
-        try {
-          await execa('brew', ['tap', tap], { stdio: 'inherit' })
-        } catch (e) {
-          console.warn(chalk.yellow(`Could not tap ${tap}: ${e.message}`))
+        if (!tapList.includes(tap)) {
+          console.log(chalk.gray(`Tapping ${tap}...`))
+          try {
+            await execa('brew', ['tap', tap], { stdio: 'inherit' })
+            hasChanges = true
+          } catch (e) {
+            console.warn(chalk.yellow(`Could not tap ${tap}: ${e.message}`))
+          }
         }
       }
     }
 
     // Module: Package Manager (Brews)
     if (finalProfile.brews) {
-      console.log(chalk.cyan('🍺 Installing Homebrew formulas...'))
-      try {
-        await execa('brew', ['install', ...finalProfile.brews], { stdio: 'inherit' })
-      } catch (e) {
-        console.warn(chalk.yellow(`Brew install encountered an issue: ${e.message}`))
+      console.log(chalk.cyan('🍺 Installing/Updating Homebrew formulas...'))
+      const { stdout: installedBrews } = await execa('brew', ['list', '--formula'])
+      const installedList = installedBrews.split('\n')
+      const { stdout: outdatedBrewsJson } = await execa('brew', ['outdated', '--json'])
+      const outdatedList = JSON.parse(outdatedBrewsJson).formulae.map((f: any) => f.name)
+
+      const toInstall = finalProfile.brews.filter(b => !installedList.includes(b))
+      const toUpgrade = finalProfile.brews.filter(b => installedList.includes(b) && outdatedList.includes(b))
+
+      if (toInstall.length > 0) {
+        console.log(chalk.gray(`Installing ${toInstall.length} formulas...`))
+        try {
+          await execa('brew', ['install', ...toInstall], { stdio: 'inherit' })
+          hasChanges = true
+        } catch (e) {
+          console.warn(chalk.yellow(`Brew install issue: ${e.message}`))
+        }
+      }
+
+      if (toUpgrade.length > 0) {
+        console.log(chalk.gray(`Upgrading ${toUpgrade.length} formulas...`))
+        try {
+          await execa('brew', ['upgrade', ...toUpgrade], { stdio: 'inherit' })
+          hasChanges = true
+        } catch (e) {
+          console.warn(chalk.yellow(`Brew upgrade issue: ${e.message}`))
+        }
       }
     }
 
     // Module: Package Manager (Casks)
     if (finalProfile.casks) {
-      console.log(chalk.cyan('🍺 Installing Homebrew casks...'))
-      try {
-        await execa('brew', ['install', '--cask', ...finalProfile.casks], { stdio: 'inherit' })
-      } catch (e) {
-        console.warn(chalk.yellow(`Cask install encountered an issue: ${e.message}`))
+      console.log(chalk.cyan('🍺 Installing/Updating Homebrew casks...'))
+      const { stdout: installedCasks } = await execa('brew', ['list', '--cask'])
+      const installedList = installedCasks.split('\n')
+      const { stdout: outdatedCasksJson } = await execa('brew', ['outdated', '--cask', '--json'])
+      const outdatedList = JSON.parse(outdatedCasksJson).casks.map((c: any) => c.token)
+
+      const toInstall = finalProfile.casks.filter(c => !installedList.includes(c))
+      const toUpgrade = finalProfile.casks.filter(c => installedList.includes(c) && outdatedList.includes(c))
+
+      if (toInstall.length > 0) {
+        console.log(chalk.gray(`Installing ${toInstall.length} casks...`))
+        try {
+          await execa('brew', ['install', '--cask', ...toInstall], { stdio: 'inherit' })
+          hasChanges = true
+        } catch (e) {
+          console.warn(chalk.yellow(`Cask install issue: ${e.message}`))
+        }
+      }
+
+      if (toUpgrade.length > 0) {
+        console.log(chalk.gray(`Upgrading ${toUpgrade.length} casks...`))
+        try {
+          await execa('brew', ['upgrade', '--cask', ...toUpgrade], { stdio: 'inherit' })
+          hasChanges = true
+        } catch (e) {
+          console.warn(chalk.yellow(`Cask upgrade issue: ${e.message}`))
+        }
       }
     }
 
@@ -156,6 +212,7 @@ program
           console.log(chalk.gray(`Installing ${app.name}...`))
           try {
             await execa('mas', ['install', app.id], { stdio: 'inherit' })
+            hasChanges = true
           } catch (e) {
             console.warn(chalk.yellow(`Could not install ${app.name}: ${e.message}`))
           }
@@ -173,8 +230,21 @@ program
             const { stdout: secretValue } = await execa('doppler', ['secrets', 'get', secret.key, '--plain', '--project', 'dotfiles', '--config', profileName])
             const sshPath = path.join(process.env.HOME!, '.ssh', `id_rsa_${profileName}`)
             await fs.ensureDir(path.dirname(sshPath))
-            await fs.writeFile(sshPath, secretValue, { mode: 0o600 })
-            console.log(chalk.green(`✓ SSH key saved to ${sshPath}`))
+            
+            // Check if key already exists and matches
+            let shouldWrite = true
+            if (await fs.pathExists(sshPath)) {
+              const currentVal = await fs.readFile(sshPath, 'utf8')
+              if (currentVal === secretValue) shouldWrite = false
+            }
+
+            if (shouldWrite) {
+              await fs.writeFile(sshPath, secretValue, { mode: 0o600 })
+              console.log(chalk.green(`✓ SSH key saved to ${sshPath}`))
+              hasChanges = true
+            } else {
+              console.log(chalk.gray('✓ SSH key is already up to date.'))
+            }
           } catch (e) {
             console.warn(chalk.yellow(`Could not fetch SSH key: ${e.message}`))
           }
@@ -190,9 +260,22 @@ program
         if (file === '.git' || file === '.DS_Store' || file === '.gitkeep') continue
         const src = path.join(DOTFILES_SRC, file)
         const dest = path.join(process.env.HOME!, `.${file}`)
-        console.log(chalk.gray(`Linking .${file} -> ${dest}`))
-        await fs.remove(dest).catch(() => {})
-        await fs.ensureSymlink(src, dest)
+        
+        let shouldLink = true
+        try {
+          const stats = await fs.lstat(dest)
+          if (stats.isSymbolicLink()) {
+            const target = await fs.readlink(dest)
+            if (target === src) shouldLink = false
+          }
+        } catch (e) {}
+
+        if (shouldLink) {
+          console.log(chalk.gray(`Linking .${file} -> ${dest}`))
+          await fs.remove(dest).catch(() => {})
+          await fs.ensureSymlink(src, dest)
+          hasChanges = true
+        }
       }
     }
 
@@ -204,12 +287,24 @@ program
       } else {
         for (const setting of finalProfile.macos_settings) {
           try {
+            // We could check current value using `defaults read`, but for now we just write.
+            // writing is mostly idempotent anyway.
             const args = ['write', setting.domain, setting.key, `-${setting.type}`, String(setting.value)]
             await execa('defaults', args, { stdio: 'inherit' })
+            hasChanges = true
           } catch (e) {
             console.warn(chalk.yellow(`Could not apply setting ${setting.key}: ${e.message}`))
           }
         }
+      }
+    }
+
+    // Execute Hooks: on-change
+    if (hasChanges && finalProfile.hooks?.['on-change']) {
+      console.log(chalk.blue('🔄 Changes detected. Running on-change hooks...'))
+      for (const hook of finalProfile.hooks['on-change']) {
+        console.log(chalk.gray(`Running on-change hook: ${hook}`))
+        await execa('bash', ['-c', hook], { stdio: 'inherit' })
       }
     }
 
